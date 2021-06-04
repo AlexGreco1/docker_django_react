@@ -103,7 +103,7 @@ localhost:8000/admin
 
 13.- enter the super user name just to see...
 
-ch4:
+# 4 Rest API
 
 14.- create the first api. in the users folder create the file views.py:
 
@@ -169,7 +169,7 @@ def user(request):
 python manage.py makemigratetions
 puthon manage.py migrate
 
-#6 SERIALIZE:
+# 6 SERIALIZE:
 
 24. In the docker-compose.yaml file, add at the end (localhost:docker container):
     ports:
@@ -197,8 +197,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 29. In the views.py in the users folder change the pass to:
 
-from .serializers import UserSerializer
-
+    from .serializers import UserSerializer
 
     data = request.data
     
@@ -223,6 +222,65 @@ from .serializers import UserSerializer
 "password_confirm":2
 }
 
-32. 
+# 7 Write Only:
+
+32. Not show password in the respond. Go to serializers.py in users and change fields __all__ to:
+
+['id','first_name','last_name','email','password']
+extra_kwargs= {
+'password': {'write_only': True}
+
+33. Add to views.py in the users folder inside the users method change to:
+    def users(rquests):
+        serializer = UserSerializer(User.objetcs.all(), many=True)
+        return Response(serializer.data)
+
+# 8 Hashing password:
+
+34. hashing password extending the models of django. In the models in the users change to:
+
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+
+    usarname = None
+    
+    USERNAME_FIELD = 'email'
+    REQUIERED_FIELDS=[]
+
+
+35. Settings.py add the end:
+    AUTH_USER_MODEL = 'users.User'
+
+36. Run migration inside admin folder in terminal:
+    docker-compose exec admin_api sh
+    
+    python manage.py makemigrations
+    
+    python manage.py migrate
+   
+37. hashing password in serilizer.py in the users folder create a method:
+
+def create(self, validated_data):
+    password = validated_data.pop('password', None)
+    instance = self.Meta.model(**validated_data)
+    if password is not None:
+        instance.set_password(password)
+    intances.save()
+    return instance 
+
+
+38. create a new user to test like step 31:
+{
+"first_name":"a",
+"last_name":"b",
+"email":"a@a.com",
+"password":1,
+"password_confirm":2
+}
+
+# 9 Loging
+
+39. 
 
  
