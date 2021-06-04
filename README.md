@@ -138,3 +138,91 @@ path('api/',include('users.urls'))
 
 19.- if we change get to post, we need to use postman to test it:
 copy the localhost:8000/hello after change to post method in the decorator, and test it in postman.
+
+# 5 MODELS:
+
+20. In the folder Users, files models.py:
+
+class User(models.Model):
+    first_name = models.Charfield(max_lenght=200)
+    last_name = models.Charfield(max_lenght=200)
+    first_name = models.Charfield(max_lenght=200, unique=True)
+    email = models.Charfield(max_lenght=200)
+    
+21. In the users folder, in the views.py file, add:
+
+from .models import User
+
+@api_views([GET])
+def user(request):
+    users = User.objects.all()
+    return Response(users)
+    
+    
+22. in users folder in the urls.py modified:
+    from .views import users
+    
+    path('users',users),
+ 
+ 
+23. Now, to exist, we need to migrate using terminal. command:
+python manage.py makemigratetions
+puthon manage.py migrate
+
+#6 SERIALIZE:
+
+24. In the docker-compose.yaml file, add at the end (localhost:docker container):
+    ports:
+    - 33066:3306
+
+25.  Restar container (stop) and them in terminal:
+docker-compose up
+
+26. Connect the database in jetbrains:
+host:localhost, port: 33066, password:root, database: django_admin
+
+27. Register function in the views.py file in the users folder add:
+@api_view(['POST']):
+def register(request):
+    pass
+    
+28. Create a new file called serializer.py in the users folder to manipulate json data and validate:
+form rest_framework import serializers
+from .models import user
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
+29. In the views.py in the users folder change the pass to:
+
+from .serializers import UserSerializer
+
+
+    data = request.data
+    
+    if data['password'] != data['password_confirm']:
+        raise exceptions.APIException('Password do not match')
+        
+    serializer = UserSerializer(data=data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data)
+
+30. add in urls.py in the user folder:
+    from .views import users, register
+    path('register',register)
+    
+31. Test wrong passwor and them wright password, open postman open register page, mathod post, body. If is successfull we will see it in postman and in the user table:
+{
+"first_name":"a",
+"last_name":"b",
+"email":"a@a.com",
+"password":1,
+"password_confirm":2
+}
+
+32. 
+
+ 
