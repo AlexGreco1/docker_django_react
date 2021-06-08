@@ -281,6 +281,88 @@ def create(self, validated_data):
 
 # 9 Loging
 
-39. 
+39. Create a loging function. In the view files.py in the users folder create a function:
+
+@api_vies(['POST']):
+def login(request):
+    email = reques.data.get('email')
+    password = request.data.get('password')
+    
+    user = User.objects.filter(email=email).fistr()
+    
+    if user is None:
+        raise exceptions.AuthentificationFaild('User not found')
+        
+    if not user.check_password(password):
+        raise exceptions.AutheticationFaild('Incorrect Password')
+        
+    return Response('Success')
+
+40. import in urls.py file in the user folder:
+
+from .views import users, register, login
+
+path('login',loging)
+
+
+41. Test with postman, url localhost:8000/login method post and in the body a json like 31 and test the messages:
+    {
+"email":"a@a.com",
+"password":1,
+}
+
+42. Create a loging function in the file views.py in users:
+
+@api_vies(['POST']):
+def login(request):
+    email = reques.data.get('email')
+    password = request.data.get('password')
+    
+    user = User.objects.filter(email=email).fistr()
+    
+    if user is not:
+        raise exceptions.AuthentificationFaild('User not found')
+        
+    if not user.check_password(password):
+        raise exceptions.AutheticationFaild('Incorrect Password')
+        
+    return Response('Success')
+
+# 10: Logout:
+
+43. Logout. go to the Nav.tsx file in the src>secure>components>Nav.tsx:
+
+Import React, {Component} from 'react'
+import {User} from "../../classes/user";
+import { cinnect } from 'react-redux'
+import axios from 'axios'
+
+class Nav extends Component<{user: User}> {
+
+    handleClick = async () => {
+        await axios.post(url:'logout', data:{})
+        this.setState(state:{
+            redirect: true
+        })
+        }
+    
+       render(){
+        if ( this.state.redirect) {
+            return <Redirect to="/loging"/>
+            }
+            
+        return (
+            ** all from the file (<nav classname </nav>)
+       
+                )
+       }
+    }
+
+
+44. Try in browser loging.
+
+# 11 Users:
+
+45.  
 
  
